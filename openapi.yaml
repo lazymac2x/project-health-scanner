@@ -1,0 +1,158 @@
+openapi: 3.1.0
+info:
+  title: Project Health Scanner
+  version: 1.0.0
+  description: |
+    MCP server that scans code projects for dependency vulnerabilities,
+    hardcoded secrets, license conflicts, code quality issues, and git health.
+    Returns a 0-100 health score (A-F grade) with actionable fix suggestions.
+
+    All analysis is performed locally — zero external API calls.
+
+    ## MCP Tools
+    - **scan_project** — Full health scan with comprehensive report
+    - **check_secrets** — Detect hardcoded API keys, passwords, tokens
+    - **check_dependencies** — Audit deps for CVEs and version issues
+    - **check_licenses** — License compliance and conflict detection
+    - **health_score** — Quick 0-100 score with grade
+
+servers:
+  - url: http://localhost:3000
+    description: Local development
+  - url: https://project-health-scanner.mcpize.com
+    description: MCPize deployment
+
+paths:
+  /mcp:
+    post:
+      operationId: mcpEndpoint
+      summary: MCP JSON-RPC 2.0 endpoint
+      description: |
+        Send JSON-RPC 2.0 requests to interact with the MCP server.
+        Supported methods: initialize, tools/list, tools/call
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [jsonrpc, id, method]
+              properties:
+                jsonrpc:
+                  type: string
+                  enum: ["2.0"]
+                id:
+                  type: [string, number]
+                method:
+                  type: string
+                  enum: [initialize, tools/list, tools/call]
+                params:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: Tool name (for tools/call)
+                    arguments:
+                      type: object
+                      description: Tool arguments (for tools/call)
+                      properties:
+                        path:
+                          type: string
+                          description: Absolute path to project directory
+            examples:
+              initialize:
+                summary: Initialize connection
+                value:
+                  jsonrpc: "2.0"
+                  id: 1
+                  method: initialize
+                  params: {}
+              list_tools:
+                summary: List available tools
+                value:
+                  jsonrpc: "2.0"
+                  id: 2
+                  method: tools/list
+              scan_project:
+                summary: Full project scan
+                value:
+                  jsonrpc: "2.0"
+                  id: 3
+                  method: tools/call
+                  params:
+                    name: scan_project
+                    arguments:
+                      path: /path/to/project
+              check_secrets:
+                summary: Secret detection
+                value:
+                  jsonrpc: "2.0"
+                  id: 4
+                  method: tools/call
+                  params:
+                    name: check_secrets
+                    arguments:
+                      path: /path/to/project
+              health_score:
+                summary: Quick health score
+                value:
+                  jsonrpc: "2.0"
+                  id: 5
+                  method: tools/call
+                  params:
+                    name: health_score
+                    arguments:
+                      path: /path/to/project
+      responses:
+        '200':
+          description: JSON-RPC 2.0 response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jsonrpc:
+                    type: string
+                  id:
+                    type: [string, number]
+                  result:
+                    type: object
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: number
+                      message:
+                        type: string
+
+  /health:
+    get:
+      operationId: healthCheck
+      summary: Server health check
+      responses:
+        '200':
+          description: Server is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok]
+                  service:
+                    type: string
+                  version:
+                    type: string
+
+  /:
+    get:
+      operationId: serverInfo
+      summary: Server information and available tools
+      responses:
+        '200':
+          description: Server info
+          content:
+            application/json:
+              schema:
+                type: object

@@ -1,0 +1,49 @@
+{
+  "actorSpecification": 1,
+  "name": "project-health-scanner",
+  "title": "Project Health Scanner",
+  "description": "Scans code projects for dependency vulnerabilities, hardcoded secrets, license conflicts, code quality issues, and git health. Returns a 0-100 health score with actionable fix suggestions.",
+  "version": "1.0.0",
+  "input": {
+    "schemaVersion": 1,
+    "title": "Project Health Scanner Input",
+    "type": "object",
+    "properties": {
+      "url": {
+        "title": "Project ZIP URL",
+        "type": "string",
+        "description": "URL to a ZIP archive of the project to scan"
+      },
+      "githubRepo": {
+        "title": "GitHub Repository URL",
+        "type": "string",
+        "description": "Git clone URL (e.g., https://github.com/user/repo.git)"
+      },
+      "tool": {
+        "title": "Scan Tool",
+        "type": "string",
+        "description": "Which scan to run",
+        "default": "scan_project",
+        "enum": ["scan_project", "check_secrets", "check_dependencies", "check_licenses", "health_score"]
+      }
+    }
+  },
+  "storages": {
+    "dataset": {
+      "actorSpecification": 1,
+      "title": "Scan Results",
+      "views": {
+        "overview": {
+          "title": "Scan Overview",
+          "transformation": {
+            "fields": ["healthScore", "project", "scanDuration"]
+          },
+          "display": {
+            "component": "table",
+            "properties": {}
+          }
+        }
+      }
+    }
+  }
+}

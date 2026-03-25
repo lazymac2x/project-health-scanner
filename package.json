@@ -1,0 +1,42 @@
+{
+  "name": "@lazymac/project-health-scanner",
+  "version": "1.0.0",
+  "description": "Premium MCP server that scans projects for dependency issues, secrets, license conflicts, code quality problems, and git health. Returns a 0-100 health score with actionable fix suggestions.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node test.js"
+  },
+  "keywords": [
+    "mcp",
+    "security",
+    "scanner",
+    "dependency-audit",
+    "secret-detection",
+    "license-compliance",
+    "code-quality",
+    "git-health",
+    "devtools",
+    "health-score"
+  ],
+  "author": "lazymac",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  },
+  "files": [
+    "src/",
+    "openapi.yaml",
+    "mcpize.yaml",
+    "Dockerfile",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lazymac-2x/project-health-scanner"
+  }
+}

@@ -1,0 +1,8 @@
+name: project-health-scanner
+runtime: container
+description: >
+  Premium MCP server that scans projects for dependency vulnerabilities,
+  hardcoded secrets, license conflicts, code quality issues, and git health.
+  Returns a 0-100 health score with actionable fix suggestions.
+port: 3000
+healthcheck: /health
